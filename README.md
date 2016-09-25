@@ -34,4 +34,4 @@ QRWizard
 Зворотній зв`язок
 ---------------
 
-Якщо виникнуть будь-які запитання - напишіть меня листа: [filalex77@gmail.com](mailto:filalex77@gmail.com).
+Якщо виникнуть будь-які запитання - напишіть мені листа: [filalex77@gmail.com](mailto:filalex77@gmail.com).
