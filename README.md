@@ -3,6 +3,8 @@ QRWizard
 
 Кодування/розкодування QR-кодів на мові програмування Java, МАН 2016
 
+Автор: Олексій Філоненко
+
 
 Використання на Windows
 ------------
@@ -19,7 +21,7 @@ QRWizard
     
     Якщо ж ні - спочатку [завантажте](https://java.com/ru/download/) Java.
 
-2. Завантажте jar-файл з останнього [релізу](https://github.com/filalex77/qrwizard/releases/download/v0.2.0/QrWizard.jar) програми
+2. Завантажте jar-файл з останнього [релізу](https://github.com/GKMK-MAN-2016/QRWizard/releases/download/v0.2.0/QrWizard.jar) програми
 та помістіть його в зручну Вам папку.
 
 3. В тому ж командному рядку наберіть `cd шлях/до/jar/файлу`. Наприклад:
