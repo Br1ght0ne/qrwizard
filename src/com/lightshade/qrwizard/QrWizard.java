@@ -124,7 +124,7 @@ public class QrWizard {
 		// КІНЕЦЬ ПРОГРАМИ
 	}
 	private static BinaryBitmap binaryBitmap;
-	public static String decode(File imageFile, Map hintMap)
+	public static String decode(File imageFile)
 			throws FileNotFoundException, IOException, NotFoundException{
 		binaryBitmap = new BinaryBitmap(new HybridBinarizer(
 		        new BufferedImageLuminanceSource(

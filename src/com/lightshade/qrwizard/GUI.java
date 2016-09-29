@@ -97,11 +97,11 @@ public class GUI {
 			JFileChooser fileopen = new JFileChooser(".");
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "png", "jpg");
 			fileopen.setFileFilter(filter);
-			int ret = fileopen.showDialog(null, "Открыть файл");
+			int ret = fileopen.showDialog(null, "Відкрити файл");
 			if (ret == JFileChooser.APPROVE_OPTION) {
 			    File file = fileopen.getSelectedFile();
 			    try {
-			    	String result = QrWizard.decode(file, QrWizard.hintMap);
+			    	String result = QrWizard.decode(file);
 			    	JOptionPane.showMessageDialog(null, result,
 	                        "Результат:", JOptionPane.PLAIN_MESSAGE);
 			    } catch (FileNotFoundException fnfe) {
