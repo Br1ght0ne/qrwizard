@@ -114,8 +114,12 @@ public class GUI {
 			    File file = fileopen.getSelectedFile();
 			    try {
                     String path = file.getPath();
+                    System.err.println("PATH: " + path);
                     String ext = FilenameUtils.getExtension(path);
-                    if (ext != "png") { throw new FileExtensionException("Неправильне розширення файла"); }
+                    System.err.println("EXT: " + ext);
+                    if ( !ext.equals("png") ) {
+                        throw new FileExtensionException("Неправильне розширення файла");
+                    }
 			    	String result = QrWizard.decode(file);
 			    	JOptionPane.showMessageDialog(null, result,
 	                        "Результат:", JOptionPane.PLAIN_MESSAGE);
