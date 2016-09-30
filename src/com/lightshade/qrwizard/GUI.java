@@ -13,6 +13,8 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.zxing.NotFoundException;
+import com.sun.applet2.preloader.CancelException;
+import org.apache.commons.io.FilenameUtils;
 
 public class GUI {
 
@@ -80,16 +82,26 @@ public class GUI {
 	}
 	
 	class EncodeActionListener implements ActionListener {
+        private String getFileName() throws CancelException {
+            String name = JOptionPane.showInputDialog(mainFrame, "Введіть ім'я для файла (бажано коротке): ");
+            if (name == null) {
+                throw new CancelException("Користувач відмінив введення імені файла");
+            } else {
+                return name;
+            }
+        }
 		public void actionPerformed(ActionEvent e) {
-			String optionFileName = getFileName();
+            String optionFileName;
+            try {
+                optionFileName = getFileName();
+            } catch (CancelException ce) {
+                ce.printStackTrace();
+                return;
+            }
 			String filePath = QrWizard.encode(textArea.getText(), optionFileName);
 			JOptionPane.showMessageDialog(null, "Код успішно створений та знаходиться у файлі " + filePath + ".",
 					"Результат:", JOptionPane.INFORMATION_MESSAGE);
 	      }
-		private String getFileName() {
-			String name = JOptionPane.showInputDialog(mainFrame, "Введіть ім'я для файла (бажано коротке): ");
-			return name;
-		}
 	}
 	
 	class DecodeActionListener implements ActionListener {
@@ -101,6 +113,9 @@ public class GUI {
 			if (ret == JFileChooser.APPROVE_OPTION) {
 			    File file = fileopen.getSelectedFile();
 			    try {
+                    String path = file.getPath();
+                    String ext = FilenameUtils.getExtension(path);
+                    if (ext != "png") { throw new FileExtensionException("Неправильне розширення файла"); }
 			    	String result = QrWizard.decode(file);
 			    	JOptionPane.showMessageDialog(null, result,
 	                        "Результат:", JOptionPane.PLAIN_MESSAGE);
@@ -110,8 +125,20 @@ public class GUI {
 			    	ioe.printStackTrace();
 			    } catch (NotFoundException nfe) {
 			    	nfe.printStackTrace();
-			    }
+			    } catch (FileExtensionException fee) {
+                    JOptionPane.showMessageDialog(mainFrame,
+                            fee.getMessage(),
+                            "Помилка!",
+                            JOptionPane.ERROR_MESSAGE);
+                }
 			}
 	      }
 	}
+
+	class FileExtensionException extends Exception {
+        public FileExtensionException() {}
+        public FileExtensionException(String message) {
+            super(message);
+        }
+    }
 }

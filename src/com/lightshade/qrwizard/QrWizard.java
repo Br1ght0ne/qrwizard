@@ -63,7 +63,6 @@ public class QrWizard {
 		File myFile = new File(filePath);
 
 		// ОСНОВНА ПРОЦЕДУРА - ПОЧАТОК
-		System.out.print("Створюємо Ваш код...");
 		try {
 
 			// створення об'єкту Map (мапи кодування), наданого бібліотекою ZXing
@@ -119,7 +118,6 @@ public class QrWizard {
 		} catch (IOException e) { // можлива помилка при одержанні/запису даних в файл
 			e.printStackTrace();
 		}
-		System.out.println("\nКод успішно створений та знаходиться у файлі " + filePath + ".");
 		return filePath;
 		// КІНЕЦЬ ПРОГРАМИ
 	}
