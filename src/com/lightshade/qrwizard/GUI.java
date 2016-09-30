@@ -35,7 +35,7 @@ public class GUI {
 	}
 	
 	private void prepareGUI(){
-		mainFrame = new JFrame("QRWizard 0.2.0, (c) 2016 Alex Filonenko");
+		mainFrame = new JFrame("QRWizard 0.3.0, (c) 2016 Alex Filonenko");
 		mainFrame.setSize(800,600);
 		mainFrame.setLayout(new GridLayout(3,0));
 		mainFrame.addWindowListener(new WindowAdapter() {
@@ -43,7 +43,7 @@ public class GUI {
 		        System.exit(0);
 	         }        
 	    });
-		titleLabel = new JLabel("QRWizard 0.2.0",JLabel.CENTER );
+		titleLabel = new JLabel("QRWizard 0.3.0",JLabel.CENTER );
 		float newSize = 50;
 		titleLabel.setFont(titleLabel.getFont().deriveFont(newSize));
 		textArea = new JTextArea(2,20);
@@ -114,8 +114,12 @@ public class GUI {
 			    File file = fileopen.getSelectedFile();
 			    try {
                     String path = file.getPath();
+                    System.err.println("PATH: " + path);
                     String ext = FilenameUtils.getExtension(path);
-                    if (ext != "png") { throw new FileExtensionException("Неправильне розширення файла"); }
+                    System.err.println("EXT: " + ext);
+                    if ( !ext.equals("png") ) {
+                        throw new FileExtensionException("Неправильне розширення файла");
+                    }
 			    	String result = QrWizard.decode(file);
 			    	JOptionPane.showMessageDialog(null, result,
 	                        "Результат:", JOptionPane.PLAIN_MESSAGE);
