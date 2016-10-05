@@ -1,9 +1,5 @@
-.classpath
 .directory
-.project
-.settings/
-QR-*.png
 .idea/
-QRWizard.iml
+qrwizard.iml
 bin/
 out/
