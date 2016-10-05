@@ -35,7 +35,7 @@ public class GUI {
 	}
 	
 	private void prepareGUI(){
-		mainFrame = new JFrame("QRWizard 0.2.0, (c) 2016 Alex Filonenko");
+		mainFrame = new JFrame("QRWizard 0.3.0, (c) 2016 Alex Filonenko");
 		mainFrame.setSize(800,600);
 		mainFrame.setLayout(new GridLayout(3,0));
 		mainFrame.addWindowListener(new WindowAdapter() {
@@ -43,7 +43,7 @@ public class GUI {
 		        System.exit(0);
 	         }        
 	    });
-		titleLabel = new JLabel("QRWizard 0.2.0",JLabel.CENTER );
+		titleLabel = new JLabel("QRWizard 0.3.0",JLabel.CENTER );
 		float newSize = 50;
 		titleLabel.setFont(titleLabel.getFont().deriveFont(newSize));
 		textArea = new JTextArea(2,20);
