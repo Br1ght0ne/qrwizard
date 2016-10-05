@@ -1,41 +1,48 @@
 package com.lightshade.qrwizard;
 
-//БІБЛІОТЕКИ, НЕОБХІДНІ ДЛЯ РОБОТИ ПРОГРАМИ
+/*
+БІБЛІОТЕКИ, НЕОБХІДНІ ДЛЯ РОБОТИ ПРОГРАМИ
+  - com.lightshade.qrwizard.core: власна бібліотека для проведення усіх операцій
+  - javax.swing, java.awt: графічні бібліотеки Java
+  - java.io, java.util, org.apache.commons.io: стандартні бібліотеки (логгінг, введення/виведення, файли, ...)
+  - com.google.zxing.NotFoundException: помилка 'не знайдено код' з бібліотеки ZXing
+ */
+import com.lightshade.qrwizard.core.QrWizard;
 
-//інтерфейс користувача на Swing
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import com.google.zxing.NotFoundException;
-import com.lightshade.qrwizard.core.QrWizard;
-import com.sun.applet2.preloader.CancelException;
 import org.apache.commons.io.FilenameUtils;
 
+import com.google.zxing.NotFoundException;
+
+/**
+ * Графічний інтерфейс програми
+ * @author Олексій Філоненко
+ * @version 0.3.0
+ */
 public class GUI {
 
 	private JFrame mainFrame;
-	private JLabel titleLabel;
-	private JPanel controlPanel;
-	private JPanel buttonPanel;
-	public JTextArea textArea;
-	private JButton encodeButton;
-	private JButton decodeButton;
-	private JButton quitButton;
-
+    private JTextArea textArea;
     private static Logger log = Logger.getLogger(GUI.class.getName());
 
-    public GUI(){
-		prepareGUI();
-	}
-	
+    /**
+     * При створенні інтерфейсу відбувається його вибудова
+     */
+    public GUI(){ prepareGUI(); }
+
+    /**
+     * Основний метод, запуск програми
+     * @param args не використовується
+     */
 	public static void main(String[] args) {
         configureLogging();
 		new GUI();
@@ -60,19 +67,19 @@ public class GUI {
 		        System.exit(0);
 	         }        
 	    });
-		titleLabel = new JLabel("QRWizard 0.3.0",JLabel.CENTER );
+        JLabel titleLabel = new JLabel("QRWizard 0.3.0", JLabel.CENTER);
 		float newSize = 50;
 		titleLabel.setFont(titleLabel.getFont().deriveFont(newSize));
 		textArea = new JTextArea(2,20);
-		controlPanel = new JPanel();
+        JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(new BorderLayout());
-		buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
 	    buttonPanel.setLayout(new FlowLayout());
-	    encodeButton = new JButton("Закодувати");
+        JButton encodeButton = new JButton("Закодувати");
 	    encodeButton.addActionListener(new EncodeActionListener());
-	    decodeButton = new JButton("Розкодувати");
+        JButton decodeButton = new JButton("Розкодувати");
 	    decodeButton.addActionListener(new DecodeActionListener());
-	    quitButton = new JButton("Вихід");
+        JButton quitButton = new JButton("Вихід");
 	    quitButton.addActionListener(new QuitActionListener());
 	    buttonPanel.add(encodeButton);
 	    buttonPanel.add(decodeButton);
@@ -92,15 +99,21 @@ public class GUI {
 		int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
 		frame.setLocation(x, y);
 	}
-	
-	class QuitActionListener implements ActionListener {
+
+    /**
+     * Слухач подій для кнопки 'Вийти'
+     */
+    class QuitActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
             log.fine("Exit button pressed - exitting");
 			System.exit(0);
 	      }
 	}
-	
-	class EncodeActionListener implements ActionListener {
+
+    /**
+     * Слухач подій для кнопки 'Закодувати'
+     */
+    class EncodeActionListener implements ActionListener {
         private String getFileName() throws CancelException {
             String name = JOptionPane.showInputDialog(mainFrame, "Введіть ім'я для файла (бажано коротке): ");
             if (name == null) {
@@ -126,7 +139,10 @@ public class GUI {
 					"Результат:", JOptionPane.INFORMATION_MESSAGE);
 	      }
 	}
-	
+
+    /**
+     * Слухач подій для кнопки 'Розкодувати'
+     */
 	class DecodeActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
             log.fine("Decode button pressed - launching decode() chain");
@@ -163,10 +179,21 @@ public class GUI {
 	      }
 	}
 
+    /**
+     * Помилка, що виникає при невірному розширенні файла
+     */
 	class FileExtensionException extends Exception {
         public FileExtensionException() {}
         public FileExtensionException(String message) {
             super(message);
         }
     }
+
+    /**
+     * Помилка, що виникає при відміні дії користувачем
+     */
+    public class CancelException extends Exception {
+        CancelException(String s) { super(s); }
+    }
+
 }
