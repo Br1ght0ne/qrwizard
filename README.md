@@ -21,15 +21,20 @@ QRWizard
     
     Якщо ж ні - спочатку [завантажте](https://java.com/ru/download/) Java.
 
-2. Завантажте jar-файл з останнього [релізу](https://github.com/GKMK-MAN-2016/QRWizard/releases/download/v0.2.0/QrWizard.jar) програми
+2. Завантажте jar-файл з останнього [релізу](https://github.com/GKMK-MAN-2016/qrwizard/releases/latest) програми
 та помістіть його в зручну Вам папку.
 
-3. В тому ж командному рядку наберіть `cd шлях/до/jar/файлу`. Наприклад:
+3. В тому ж командному рядку наберіть `cd шлях/до/jar/файлу`. Наприклад, якщо файл завантажено в `Downloads`:
 
         C:\Users\man:> cd Downloads
         C:\Users\man\Downloads:>
 
-4. Наберіть `java -jar QrWizard.jar`.
+4. Наберіть `java -jar qrwizard-VERSION.jar`, де `VERSION` - версія продукту.
+
+Документація
+---------------
+
+З Javadoc-документацією проекту можна ознайомитись [тут](https://gkmk-man-2016.github.io/qrwizard/docs/).
 
 Зворотній зв`язок
 ---------------
