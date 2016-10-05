@@ -8,6 +8,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -26,15 +28,29 @@ public class GUI {
 	private JButton encodeButton;
 	private JButton decodeButton;
 	private JButton quitButton;
-	public GUI(){
+
+    private static Logger log = Logger.getLogger(GUI.class.getName());
+
+    public GUI(){
 		prepareGUI();
 	}
 	
 	public static void main(String[] args) {
+        configureLogging();
 		new GUI();
 	}
-	
+
+	private static void configureLogging() {
+        try {
+            LogManager.getLogManager().readConfiguration(
+                    GUI.class.getResourceAsStream("/logging.properties"));
+        } catch (IOException e) {
+            System.err.println("Could not setup logger configuration: " + e.toString());
+        }
+    }
+
 	private void prepareGUI(){
+        log.fine("Preparing GUI");
 		mainFrame = new JFrame("QRWizard 0.3.0, (c) 2016 Alex Filonenko");
 		mainFrame.setSize(800,600);
 		mainFrame.setLayout(new GridLayout(3,0));
@@ -65,6 +81,7 @@ public class GUI {
 		mainFrame.add(textArea);
 	    mainFrame.add(controlPanel);
 		centerWindow(mainFrame);
+        log.fine("Showing GUI");
 		mainFrame.setVisible(true);
 	}
 	
@@ -77,6 +94,7 @@ public class GUI {
 	
 	class QuitActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+            log.fine("Exit button pressed - exitting");
 			System.exit(0);
 	      }
 	}
@@ -91,6 +109,7 @@ public class GUI {
             }
         }
 		public void actionPerformed(ActionEvent e) {
+            log.fine("Encode button pressed - launching encode() chain");
             String optionFileName;
             try {
                 optionFileName = getFileName();
@@ -98,7 +117,10 @@ public class GUI {
                 ce.printStackTrace();
                 return;
             }
+            String text = textArea.getText();
+            log.info("Started encoding '" + text + "' to file '" + optionFileName + "'");
 			String filePath = QrWizard.encode(textArea.getText(), optionFileName);
+            log.info("Encoding succesful\n");
 			JOptionPane.showMessageDialog(null, "Код успішно створений та знаходиться у файлі " + filePath + ".",
 					"Результат:", JOptionPane.INFORMATION_MESSAGE);
 	      }
@@ -106,6 +128,7 @@ public class GUI {
 	
 	class DecodeActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+            log.fine("Decode button pressed - launching decode() chain");
 			JFileChooser fileopen = new JFileChooser(".");
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "png", "jpg");
 			fileopen.setFileFilter(filter);
@@ -114,13 +137,13 @@ public class GUI {
 			    File file = fileopen.getSelectedFile();
 			    try {
                     String path = file.getPath();
-                    System.err.println("PATH: " + path);
                     String ext = FilenameUtils.getExtension(path);
-                    System.err.println("EXT: " + ext);
                     if ( !ext.equals("png") ) {
                         throw new FileExtensionException("Неправильне розширення файла");
                     }
+                    log.info("Started decoding file '" + file + "'");
 			    	String result = QrWizard.decode(file);
+                    log.info("Decoding succesful. Result: '" + result + "'\n");
 			    	JOptionPane.showMessageDialog(null, result,
 	                        "Результат:", JOptionPane.PLAIN_MESSAGE);
 			    } catch (FileNotFoundException fnfe) {
