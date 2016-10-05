@@ -37,7 +37,7 @@ public class GUI {
     /**
      * При створенні інтерфейсу відбувається його вибудова
      */
-    public GUI(){ prepareGUI(); }
+    public GUI(){ prepareGUI("0.3.0"); }
 
     /**
      * Основний метод, запуск програми
@@ -57,9 +57,9 @@ public class GUI {
         }
     }
 
-	private void prepareGUI(){
+	private void prepareGUI(String version) {
         log.fine("Preparing GUI");
-		mainFrame = new JFrame("QRWizard 0.3.0, (c) 2016 Alex Filonenko");
+		mainFrame = new JFrame("QRWizard " + version + ", (c) 2016 Alex Filonenko");
 		mainFrame.setSize(800,600);
 		mainFrame.setLayout(new GridLayout(3,0));
 		mainFrame.addWindowListener(new WindowAdapter() {
