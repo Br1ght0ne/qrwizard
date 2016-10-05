@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.google.zxing.NotFoundException;
+import com.lightshade.qrwizard.core.QrWizard;
 import com.sun.applet2.preloader.CancelException;
 import org.apache.commons.io.FilenameUtils;
 
