@@ -7,6 +7,7 @@ package com.lightshade.qrwizard;
   - java.io, java.util, org.apache.commons.io: стандартні бібліотеки (логгінг, введення/виведення, файли, ...)
   - com.google.zxing.NotFoundException: помилка 'не знайдено код' з бібліотеки ZXing
  */
+import com.google.zxing.WriterException;
 import com.lightshade.qrwizard.core.QrWizard;
 
 import java.awt.*;
@@ -133,11 +134,16 @@ public class GUI {
             }
             String text = textArea.getText();
             log.info("Started encoding '" + text + "' to file '" + optionFileName + "'");
-			String filePath = QrWizard.encode(textArea.getText(), optionFileName);
-            log.info("Encoding succesful\n");
-			JOptionPane.showMessageDialog(null, "Код успішно створений та знаходиться у файлі " + filePath + ".",
-					"Результат:", JOptionPane.INFORMATION_MESSAGE);
-	      }
+			try {
+				String filePath = QrWizard.encode(textArea.getText(), optionFileName);
+				log.info("Encoding succesful\n");
+				JOptionPane.showMessageDialog(null, "Код успішно створений та знаходиться у файлі " + filePath + ".",
+						"Результат:", JOptionPane.INFORMATION_MESSAGE);
+			} catch (WriterException | NullPointerException we) {
+				JOptionPane.showMessageDialog(null, "Помилка запису у файл (вірогідно, що дані занадто великі)",
+						"Помилка!", JOptionPane.ERROR_MESSAGE);
+			}
+        }
 	}
 
     /**
