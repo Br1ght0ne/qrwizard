@@ -67,7 +67,7 @@ public class GUI {
 		        System.exit(0);
 	         }        
 	    });
-        JLabel titleLabel = new JLabel("QRWizard 0.3.0", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("QRWizard 0.4.1", JLabel.CENTER);
 		float newSize = 50;
 		titleLabel.setFont(titleLabel.getFont().deriveFont(newSize));
 		textArea = new JTextArea(2,20);
