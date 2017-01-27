@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.regex.*;
 
 import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.io.FilenameUtils;
@@ -178,7 +179,9 @@ public class GUI {
                     JLabel restext = new JLabel(result, SwingConstants.CENTER);
                     restext.setFont(new Font("Calibri", Font.PLAIN, 24));
                     log.info("Decoding succesful. Result: '" + result + "'\n");
-			    	if (result.startsWith("http")) {
+                    Pattern hyperlinkp = Pattern.compile("[a-zA-Z0-9]+\\.[a-zA-Z0-9]+");
+                    Matcher matcher = hyperlinkp.matcher(result);
+			    	if ( (result.startsWith("http")) || (matcher.matches()) ) {
 			    	    Object[] options = {"Перейти за посиланням",
                                             "Закрити"};
 			    	    int action = JOptionPane.showOptionDialog(mainFrame, restext,
