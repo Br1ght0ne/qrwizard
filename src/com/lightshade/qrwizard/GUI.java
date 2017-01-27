@@ -36,7 +36,7 @@ import com.google.zxing.NotFoundException;
  * @version 0.3.0
  */
 public class GUI {
-
+    public static String version = "0.4.2";
 	private JFrame mainFrame;
     private JTextArea textArea;
     private static Logger log = Logger.getLogger(GUI.class.getName());
@@ -44,7 +44,7 @@ public class GUI {
     /**
      * При створенні інтерфейсу відбувається його вибудова
      */
-    public GUI(){ prepareGUI("0.3.0"); }
+    public GUI(){ prepareGUI(); }
 
     /**
      * Основний метод, запуск програми
@@ -64,9 +64,9 @@ public class GUI {
         }
     }
 
-	private void prepareGUI(String version) {
+	private void prepareGUI() {
         log.fine("Preparing GUI");
-		mainFrame = new JFrame("QRWizard " + version + ", (c) 2016 Alex Filonenko");
+		mainFrame = new JFrame("QRWizard " + version + ", (c) 2017 Alex Filonenko");
 		mainFrame.setSize(800,600);
 		mainFrame.setLayout(new GridLayout(3,0));
 		mainFrame.addWindowListener(new WindowAdapter() {
@@ -74,7 +74,7 @@ public class GUI {
 		        System.exit(0);
 	         }        
 	    });
-        JLabel titleLabel = new JLabel("QRWizard 0.4.1", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("QRWizard " + version, JLabel.CENTER);
 		float newSize = 50;
 		titleLabel.setFont(titleLabel.getFont().deriveFont(newSize));
 		textArea = new JTextArea(2,20);
@@ -195,12 +195,8 @@ public class GUI {
                         JOptionPane.showMessageDialog(mainFrame, restext,
                                 "Результат:", JOptionPane.PLAIN_MESSAGE);
 					}
-			    } catch (FileNotFoundException fnfe) {
-			    	fnfe.printStackTrace();
-			    } catch (IOException ioe) {
+			    } catch (IOException | NotFoundException ioe) {
 			    	ioe.printStackTrace();
-			    } catch (NotFoundException nfe) {
-			    	nfe.printStackTrace();
 			    } catch (FileExtensionException fee) {
                     JOptionPane.showMessageDialog(mainFrame,
                             fee.getMessage(),
