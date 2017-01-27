@@ -12,14 +12,20 @@ import com.lightshade.qrwizard.core.QrWizard;
 
 import java.awt.*;
 import java.awt.event.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+
+import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.zxing.NotFoundException;
@@ -160,15 +166,35 @@ public class GUI {
 			    File file = fileopen.getSelectedFile();
 			    try {
                     String path = file.getPath();
+                    Image img = ImageIO.read(file);
+                    Image resizedImg = img.getScaledInstance(200, 200, 200);
+                    ImageIcon imgicon = new ImageIcon(resizedImg);
                     String ext = FilenameUtils.getExtension(path);
                     if ( !ext.equals("png") ) {
                         throw new FileExtensionException("Неправильне розширення файла");
                     }
                     log.info("Started decoding file '" + file + "'");
 			    	String result = QrWizard.decode(file);
+                    JLabel restext = new JLabel(result, SwingConstants.CENTER);
+                    restext.setFont(new Font("Calibri", Font.PLAIN, 24));
                     log.info("Decoding succesful. Result: '" + result + "'\n");
-			    	JOptionPane.showMessageDialog(null, result,
-	                        "Результат:", JOptionPane.PLAIN_MESSAGE);
+			    	if (result.startsWith("http")) {
+			    	    Object[] options = {"Перейти за посиланням",
+                                            "Закрити"};
+			    	    int action = JOptionPane.showOptionDialog(mainFrame, restext,
+                                "Результат:", JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.QUESTION_MESSAGE, imgicon, options, options[1]);
+			    	    if (action == JOptionPane.OK_OPTION) {
+			    	        try {
+			    	            Desktop.getDesktop().browse(new URL(result).toURI());
+                            } catch (URISyntaxException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+					} else {
+                        JOptionPane.showMessageDialog(mainFrame, restext,
+                                "Результат:", JOptionPane.PLAIN_MESSAGE);
+					}
 			    } catch (FileNotFoundException fnfe) {
 			    	fnfe.printStackTrace();
 			    } catch (IOException ioe) {
