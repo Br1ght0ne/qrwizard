@@ -7,40 +7,39 @@ package com.lightshade.qrwizard;
   - java.io, java.util, org.apache.commons.io: стандартні бібліотеки (логгінг, введення/виведення, файли, ...)
   - com.google.zxing.NotFoundException: помилка 'не знайдено код' з бібліотеки ZXing
  */
+
+import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
 import com.lightshade.qrwizard.core.QrWizard;
+import org.apache.commons.io.FilenameUtils;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import java.awt.image.BufferedImage;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.regex.*;
-
-import jdk.nashorn.internal.scripts.JO;
-import org.apache.commons.io.FilenameUtils;
-
-import com.google.zxing.NotFoundException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Графічний інтерфейс програми
  * @author Олексій Філоненко
- * @version 0.3.0
+ * @version 1.0
  */
 public class GUI {
-    private static String version = "0.4.2";
+	private static String version = "1.0";
+	private static Logger log = Logger.getLogger(GUI.class.getName());
 	private JFrame mainFrame;
     private JTextArea textArea;
-    private static Logger log = Logger.getLogger(GUI.class.getName());
 
     /**
      * При створенні інтерфейсу відбувається його вибудова
@@ -65,6 +64,13 @@ public class GUI {
         }
     }
 
+	private static void centerWindow(Window frame) {
+		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+		int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+		frame.setLocation(x, y);
+	}
+	
 	private void prepareGUI() {
         log.fine("Preparing GUI");
 		mainFrame = new JFrame("QRWizard " + version + ", (c) 2017 Alex Filonenko");
@@ -73,8 +79,8 @@ public class GUI {
 		mainFrame.addWindowListener(new WindowAdapter() {
 	         public void windowClosing(WindowEvent windowEvent){
 		        System.exit(0);
-	         }        
-	    });
+			 }
+		});
         JLabel titleLabel = new JLabel("QRWizard " + version, JLabel.CENTER);
 		float newSize = 50;
 		titleLabel.setFont(titleLabel.getFont().deriveFont(newSize));
@@ -99,13 +105,6 @@ public class GUI {
 		centerWindow(mainFrame);
         log.fine("Showing GUI");
 		mainFrame.setVisible(true);
-	}
-	
-	private static void centerWindow(Window frame){
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
-		int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
-		frame.setLocation(x, y);
 	}
 
     /**

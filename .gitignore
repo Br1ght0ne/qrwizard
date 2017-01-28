@@ -4,3 +4,4 @@ qrwizard.iml
 bin/
 out/
 log*
+*.png
