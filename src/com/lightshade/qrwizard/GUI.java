@@ -37,7 +37,7 @@ import com.google.zxing.NotFoundException;
  * @version 0.3.0
  */
 public class GUI {
-    public static String version = "0.4.2";
+    private static String version = "0.4.2";
 	private JFrame mainFrame;
     private JTextArea textArea;
     private static Logger log = Logger.getLogger(GUI.class.getName());
@@ -179,9 +179,9 @@ public class GUI {
                     JLabel restext = new JLabel(result, SwingConstants.CENTER);
                     restext.setFont(new Font("Calibri", Font.PLAIN, 24));
                     log.info("Decoding succesful. Result: '" + result + "'\n");
-                    Pattern hyperlinkp = Pattern.compile("[a-zA-Z0-9]+\\.[a-zA-Z0-9]+");
+                    Pattern hyperlinkp = Pattern.compile("(?=[a-zA-Z])([a-zA-Z0-9-_]*[a-zA-Z][a-zA-Z0-9-_]*(?:\\.[a-zA-Z/?=]+)+)");
                     Matcher matcher = hyperlinkp.matcher(result);
-			    	if ( (result.startsWith("http")) || (matcher.matches()) ) {
+			    	if ( matcher.find() ) {
 			    	    Object[] options = {"Перейти за посиланням",
                                             "Закрити"};
 			    	    int action = JOptionPane.showOptionDialog(mainFrame, restext,
@@ -189,7 +189,11 @@ public class GUI {
                                 JOptionPane.QUESTION_MESSAGE, imgicon, options, options[1]);
 			    	    if (action == JOptionPane.OK_OPTION) {
 			    	        try {
-			    	            Desktop.getDesktop().browse(new URL(result).toURI());
+			    	        	String url = matcher.group(1);
+			    	            if ( !(url.startsWith("http")) ) {
+			    	                url = "http://" + url;
+                                }
+			    	            Desktop.getDesktop().browse(new URL(url).toURI());
                             } catch (URISyntaxException e1) {
                                 e1.printStackTrace();
                             }
