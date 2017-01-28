@@ -221,8 +221,7 @@ public class GUI {
      * Помилка, що виникає при невірному розширенні файла
      */
 	class FileExtensionException extends Exception {
-        public FileExtensionException() {}
-        public FileExtensionException(String message) {
+        FileExtensionException(String message) {
             super(message);
         }
     }
