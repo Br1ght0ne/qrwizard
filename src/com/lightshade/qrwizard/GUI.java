@@ -7,18 +7,26 @@ package com.lightshade.qrwizard;
   - java.io, java.util, org.apache.commons.io: стандартні бібліотеки (логгінг, введення/виведення, файли, ...)
   - com.google.zxing.NotFoundException: помилка 'не знайдено код' з бібліотеки ZXing
  */
+import com.google.zxing.WriterException;
 import com.lightshade.qrwizard.core.QrWizard;
 
 import java.awt.*;
 import java.awt.event.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.regex.*;
+
+import jdk.nashorn.internal.scripts.JO;
 import org.apache.commons.io.FilenameUtils;
 
 import com.google.zxing.NotFoundException;
@@ -29,7 +37,7 @@ import com.google.zxing.NotFoundException;
  * @version 0.3.0
  */
 public class GUI {
-
+    private static String version = "0.4.2";
 	private JFrame mainFrame;
     private JTextArea textArea;
     private static Logger log = Logger.getLogger(GUI.class.getName());
@@ -37,7 +45,7 @@ public class GUI {
     /**
      * При створенні інтерфейсу відбувається його вибудова
      */
-    public GUI(){ prepareGUI("0.3.0"); }
+    public GUI(){ prepareGUI(); }
 
     /**
      * Основний метод, запуск програми
@@ -57,9 +65,9 @@ public class GUI {
         }
     }
 
-	private void prepareGUI(String version) {
+	private void prepareGUI() {
         log.fine("Preparing GUI");
-		mainFrame = new JFrame("QRWizard " + version + ", (c) 2016 Alex Filonenko");
+		mainFrame = new JFrame("QRWizard " + version + ", (c) 2017 Alex Filonenko");
 		mainFrame.setSize(800,600);
 		mainFrame.setLayout(new GridLayout(3,0));
 		mainFrame.addWindowListener(new WindowAdapter() {
@@ -67,7 +75,7 @@ public class GUI {
 		        System.exit(0);
 	         }        
 	    });
-        JLabel titleLabel = new JLabel("QRWizard 0.4.1", JLabel.CENTER);
+        JLabel titleLabel = new JLabel("QRWizard " + version, JLabel.CENTER);
 		float newSize = 50;
 		titleLabel.setFont(titleLabel.getFont().deriveFont(newSize));
 		textArea = new JTextArea(2,20);
@@ -133,11 +141,16 @@ public class GUI {
             }
             String text = textArea.getText();
             log.info("Started encoding '" + text + "' to file '" + optionFileName + "'");
-			String filePath = QrWizard.encode(textArea.getText(), optionFileName);
-            log.info("Encoding succesful\n");
-			JOptionPane.showMessageDialog(null, "Код успішно створений та знаходиться у файлі " + filePath + ".",
-					"Результат:", JOptionPane.INFORMATION_MESSAGE);
-	      }
+			try {
+				String filePath = QrWizard.encode(textArea.getText(), optionFileName);
+				log.info("Encoding succesful\n");
+				JOptionPane.showMessageDialog(null, "Код успішно створений та знаходиться у файлі " + filePath + ".",
+						"Результат:", JOptionPane.INFORMATION_MESSAGE);
+			} catch (WriterException | NullPointerException we) {
+				JOptionPane.showMessageDialog(null, "Помилка запису у файл (вірогідно, що дані занадто великі)",
+						"Помилка!", JOptionPane.ERROR_MESSAGE);
+			}
+        }
 	}
 
     /**
@@ -154,21 +167,47 @@ public class GUI {
 			    File file = fileopen.getSelectedFile();
 			    try {
                     String path = file.getPath();
+                    Image img = ImageIO.read(file);
+                    Image resizedImg = img.getScaledInstance(200, 200, 200);
+                    ImageIcon imgicon = new ImageIcon(resizedImg);
                     String ext = FilenameUtils.getExtension(path);
                     if ( !ext.equals("png") ) {
                         throw new FileExtensionException("Неправильне розширення файла");
                     }
                     log.info("Started decoding file '" + file + "'");
 			    	String result = QrWizard.decode(file);
+                    JLabel restext = new JLabel(result, SwingConstants.CENTER);
+                    restext.setFont(new Font("Calibri", Font.PLAIN, 24));
                     log.info("Decoding succesful. Result: '" + result + "'\n");
-			    	JOptionPane.showMessageDialog(null, result,
-	                        "Результат:", JOptionPane.PLAIN_MESSAGE);
-			    } catch (FileNotFoundException fnfe) {
-			    	fnfe.printStackTrace();
-			    } catch (IOException ioe) {
+                    Pattern hyperlinkp = Pattern.compile("(?=[a-zA-Z])([a-zA-Z0-9-_]*[a-zA-Z][a-zA-Z0-9-_]*(?:\\.[a-zA-Z/?=]+)+)");
+                    Matcher matcher = hyperlinkp.matcher(result);
+			    	if ( matcher.find() ) {
+			    	    Object[] options = {"Перейти за посиланням",
+                                            "Закрити"};
+			    	    int action = JOptionPane.showOptionDialog(mainFrame, restext,
+                                "Результат:", JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.QUESTION_MESSAGE, imgicon, options, options[1]);
+			    	    if (action == JOptionPane.OK_OPTION) {
+			    	        try {
+			    	        	String url = matcher.group(1);
+			    	            if ( !(url.startsWith("http")) ) {
+			    	                url = "http://" + url;
+                                }
+			    	            Desktop.getDesktop().browse(new URL(url).toURI());
+                            } catch (URISyntaxException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+					} else {
+			    	    Object[] options = {
+			    	            "Закрити"
+                        };
+                        JOptionPane.showOptionDialog(mainFrame, restext,
+                                "Результат:", JOptionPane.YES_OPTION, JOptionPane.PLAIN_MESSAGE,
+								imgicon, options, options[0]);
+					}
+			    } catch (IOException | NotFoundException ioe) {
 			    	ioe.printStackTrace();
-			    } catch (NotFoundException nfe) {
-			    	nfe.printStackTrace();
 			    } catch (FileExtensionException fee) {
                     JOptionPane.showMessageDialog(mainFrame,
                             fee.getMessage(),
