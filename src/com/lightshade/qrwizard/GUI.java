@@ -199,8 +199,12 @@ public class GUI {
                             }
                         }
 					} else {
-                        JOptionPane.showMessageDialog(mainFrame, restext,
-                                "Результат:", JOptionPane.PLAIN_MESSAGE);
+			    	    Object[] options = {
+			    	            "Закрити"
+                        };
+                        JOptionPane.showOptionDialog(mainFrame, restext,
+                                "Результат:", JOptionPane.YES_OPTION, JOptionPane.PLAIN_MESSAGE,
+								imgicon, options, options[0]);
 					}
 			    } catch (IOException | NotFoundException ioe) {
 			    	ioe.printStackTrace();
