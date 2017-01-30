@@ -33,10 +33,10 @@ import java.util.regex.Pattern;
 /**
  * Графічний інтерфейс програми
  * @author Олексій Філоненко
- * @version 1.0
+ * @version 1.0.1
  */
 public class GUI {
-	private static String version = "1.0";
+	private static String version = "1.0.1";
 	private static Logger log = Logger.getLogger(GUI.class.getName());
 	private JFrame mainFrame;
     private JTextArea textArea;
