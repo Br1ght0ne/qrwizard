@@ -178,8 +178,8 @@ public class GUI {
                     JLabel restext = new JLabel(result, SwingConstants.CENTER);
                     restext.setFont(new Font("Calibri", Font.PLAIN, 24));
                     log.info("Decoding succesful. Result: '" + result + "'\n");
-                    Pattern hyperlinkp = Pattern.compile("(?=[a-zA-Z])([a-zA-Z0-9-_]*[a-zA-Z][a-zA-Z0-9-_]*(?:\\.[a-zA-Z/?=]+)+)");
-                    Matcher matcher = hyperlinkp.matcher(result);
+					Pattern hyperlinkp = Pattern.compile("(?=[a-zA-Z])([a-zA-Z0-9-_]*[a-zA-Z][a-zA-Z0-9-_]*(?:\\.[a-zA-Z0-9-/?=]+)+)");
+					Matcher matcher = hyperlinkp.matcher(result);
 			    	if ( matcher.find() ) {
 			    	    Object[] options = {"Перейти за посиланням",
                                             "Закрити"};
