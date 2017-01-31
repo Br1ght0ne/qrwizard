@@ -35,11 +35,11 @@ import java.util.regex.Pattern;
 /**
  * Графічний інтерфейс програми
  * @author Олексій Філоненко
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class GUI {
-	private static String version = "1.0.1";
-	private static Logger log = Logger.getLogger(GUI.class.getName());
+    private static String version = "1.0.2";
+    private static Logger log = Logger.getLogger(GUI.class.getName());
 	private JFrame mainFrame;
     private JTextArea textArea;
 
