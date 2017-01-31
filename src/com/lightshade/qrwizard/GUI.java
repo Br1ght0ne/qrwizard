@@ -17,6 +17,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -33,11 +35,11 @@ import java.util.regex.Pattern;
 /**
  * Графічний інтерфейс програми
  * @author Олексій Філоненко
- * @version 1.0.1
+ * @version 1.0.2
  */
 public class GUI {
-	private static String version = "1.0.1";
-	private static Logger log = Logger.getLogger(GUI.class.getName());
+    private static String version = "1.0.2";
+    private static Logger log = Logger.getLogger(GUI.class.getName());
 	private JFrame mainFrame;
     private JTextArea textArea;
 
@@ -182,12 +184,13 @@ public class GUI {
 					Matcher matcher = hyperlinkp.matcher(result);
 			    	if ( matcher.find() ) {
 			    	    Object[] options = {"Перейти за посиланням",
+                                "Скопіювати і закрити",
                                             "Закрити"};
 			    	    int action = JOptionPane.showOptionDialog(mainFrame, restext,
-                                "Результат:", JOptionPane.OK_CANCEL_OPTION,
+                                "Результат:", JOptionPane.YES_NO_CANCEL_OPTION,
                                 JOptionPane.QUESTION_MESSAGE, imgicon, options, options[1]);
-			    	    if (action == JOptionPane.OK_OPTION) {
-			    	        try {
+                        if (action == JOptionPane.YES_OPTION) {
+                            try {
 			    	        	String url = matcher.group(1);
 			    	            if ( !(url.startsWith("http")) ) {
 			    	                url = "http://" + url;
@@ -197,14 +200,26 @@ public class GUI {
                                 e1.printStackTrace();
                             }
                         }
-					} else {
+                        if (action == JOptionPane.NO_OPTION) {
+                            StringSelection selection = new StringSelection(result);
+                            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                            clipboard.setContents(selection, selection);
+                        }
+                    } else {
 			    	    Object[] options = {
-			    	            "Закрити"
+                                "Скопіювати",
+                                "Закрити"
                         };
-                        JOptionPane.showOptionDialog(mainFrame, restext,
-                                "Результат:", JOptionPane.YES_OPTION, JOptionPane.PLAIN_MESSAGE,
-								imgicon, options, options[0]);
-					}
+                        int action = JOptionPane.showOptionDialog(mainFrame, restext,
+                                "Результат:", JOptionPane.YES_NO_OPTION,
+                                JOptionPane.PLAIN_MESSAGE,
+                                imgicon, options, options[1]);
+                        if (action == JOptionPane.YES_OPTION) {
+                            StringSelection selection = new StringSelection(result);
+                            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                            clipboard.setContents(selection, selection);
+                        }
+                    }
 			    } catch (IOException | NotFoundException ioe) {
 			    	ioe.printStackTrace();
 			    } catch (FileExtensionException fee) {
