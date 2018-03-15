@@ -21,8 +21,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -46,7 +44,9 @@ public class GUI {
     /**
      * При створенні інтерфейсу відбувається його вибудова
      */
-    public GUI(){ prepareGUI(); }
+    public GUI(){
+        SwingUtilities.invokeLater(this::prepareGUI);
+    }
 
     /**
      * Основний метод, запуск програми
@@ -78,11 +78,7 @@ public class GUI {
 		mainFrame = new JFrame("QRWizard " + version + ", (c) 2017 Alex Filonenko");
 		mainFrame.setSize(800,600);
 		mainFrame.setLayout(new GridLayout(3,0));
-		mainFrame.addWindowListener(new WindowAdapter() {
-	         public void windowClosing(WindowEvent windowEvent){
-		        System.exit(0);
-			 }
-		});
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JLabel titleLabel = new JLabel("QRWizard " + version, JLabel.CENTER);
 		float newSize = 50;
 		titleLabel.setFont(titleLabel.getFont().deriveFont(newSize));
@@ -114,7 +110,7 @@ public class GUI {
      */
     class QuitActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-            log.fine("Exit button pressed - exitting");
+            log.fine("Exit button pressed - exiting");
 			System.exit(0);
 	      }
 	}
@@ -144,7 +140,7 @@ public class GUI {
             log.info("Started encoding '" + text + "' to file '" + optionFileName + "'");
 			try {
 				String filePath = QrWizard.encode(textArea.getText(), optionFileName);
-				log.info("Encoding succesful\n");
+				log.info("Encoding successful\n");
 				JOptionPane.showMessageDialog(null, "Код успішно створений та знаходиться у файлі " + filePath + ".",
 						"Результат:", JOptionPane.INFORMATION_MESSAGE);
 			} catch (WriterException | NullPointerException we) {
